@@ -1,20 +1,36 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function Home() {
+import { Product } from '../components/Product';
+import { fetchProducts } from '../services/products/fetchProducts';
+
+export default function HomeScreenRoute() {
+
+  const { data } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  })
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={data}
+        numColumns={2}
+        contentContainerStyle={{ gap: 24 }}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={item => item.id.toString()}
+        renderItem={({ item }) => <Product {...item} />}
+        columnWrapperStyle={{ justifyContent: 'space-between' }}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 16,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
