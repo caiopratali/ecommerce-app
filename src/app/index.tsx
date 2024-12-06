@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { FlatList, StyleSheet } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button } from '../components/Button';
@@ -9,13 +9,21 @@ import { fetchProducts } from '../services/products/fetchProducts';
 
 export default function HomeScreenRoute() {
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: fetchProducts,
   })
 
   const addNewProduct = () => {
     router.push('/product/create');
+  }
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator color='#000' />
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -40,6 +48,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
+    justifyContent: 'center',
     backgroundColor: '#fff',
   },
 });
